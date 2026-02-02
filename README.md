@@ -4,7 +4,7 @@
 Examine how **age** affects **insurance charges** using a simple linear regression model.
 
 ## 📊 Dataset
-- Source: `insurance.csv`  
+- Source: A public dataset from Kaggle `insurance.csv`  
 - Variables:  
   - `age` (Age of the policyholder in years)  
   - `charges` (Insurance charges in USD)  
@@ -31,7 +31,7 @@ Examine how **age** affects **insurance charges** using a simple linear regressi
 ## 🖼️ Visualization
 Scatter plot with regression line showing relationship between age and charges:  
 
-![Age vs Insurance Charges](plots/scatter_plot.png)  
+![Age vs Insurance Charges](plots/scatter_age_charges.png)  
 
 ## 🧠 Conclusion
 The simple linear regression model shows a **statistically significant positive relationship** between age and insurance charges. Although age explains only a small portion of the variability, this analysis provides a foundational understanding of how age impacts charges and serves as a basis for future multivariate modeling.  
