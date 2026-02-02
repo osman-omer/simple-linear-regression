@@ -1,0 +1,99 @@
+---
+title: "Simple Linear Regression"
+author: "Osman Omer Mustafa"
+date: "today"
+format:
+  html:
+    toc: true
+    code-fold: true
+    theme: cosmo
+    toc-location: left
+---
+## Load required libraries
+```{r setup, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(broom)
+```
+
+## Read data
+```{r message=FALSE}
+data <- read_csv("insurance.csv")
+```
+
+## Quick structure check
+```{r}
+glimpse(data)
+```
+
+## Scatter plot with regression line 
+Visualize the relationship between Age and Charges to check for linear trend and possible outliers.
+```{r message=FALSE}
+scatter_plot <- ggplot(data, aes(x = age, y = charges)) +
+  geom_point(alpha = 0.6) +  
+  geom_smooth(method = "lm", se = TRUE) +    
+  labs(
+    x = "Age (Years)",
+    y = "Insurance Charges (USD)",
+    title = "Age vs Insurance Charges (Simple Linear Regression)"
+  )
+scatter_plot
+```
+
+The scatter plot shows a generally increasing trend between age and insurance charges. Some variability is observed, and a few points appear as potential outliers. Overall, a linear relationship seems plausible for modeling.
+
+## Fit model
+Fit a simple linear regression model to quantify how age affects 
+insurance charges.
+```{r}
+model <- lm(charges ~ age, data = data)
+```
+
+## View model
+```{r}
+result <- tidy(model)
+result %>% knitr::kable( caption = "Model Results")
+```
+The tidy summary confirms a significant positive effect of age on insurance charges. Each additional year increases charges by approximately 258 USD. The model is simple, so R-squared remains low, indicating other factors also influence charges.
+
+## Model Performance 
+Check overall model fit including R-squared, adjusted R-squared, and F-statistic.
+```{r}
+model_perf <- glance(model)
+model_perf %>% knitr::kable(caption = " Model Perfermance")
+```
+
+The F-test confirms the model is statistically significant (p < 0.001), but the R-squared is low (~9%), indicating age alone explains a small portion of variability in insurance charges.
+
+## Model dignistics
+Summarize the findings after fitting the model and checking assumptions.
+
+## Linearity & homoscedasticity
+Check linearity and constant variance by plotting residuals vs fitted values.
+```{r}
+resid_plot <- plot(model, which = 1)
+```
+Ideally, residuals should be randomly scattered around zero. Any pattern may indicate non-linearity or heteroscedasticity. In this dataset, slight funneling is observed, suggesting variance increases with fitted charges.
+
+## Normality of residuals
+Assess whether residuals are approximately normally distributed using QQ plot.
+```{r}
+qq_reg_plot <- plot(model, which = 2)
+```
+Points should lie close to the diagonal line. Deviations at the tails indicate non-normality. Some deviation is observed, especially for high charges, which is common in skewed datasets.
+
+## Scale-location
+Examine if residuals have constant spread across fitted values.
+```{r}
+scale_loc_plot <- plot(model, which = 3)
+```
+A horizontal line with evenly spread points indicates homoscedasticity. Here, residuals spread slightly increases with fitted values, suggesting mild heteroscedasticity.
+
+## Cook's distance
+Identify influential points that may disproportionately affect the model.
+```{r}
+cooks_plot <- plot(model, which = 5)
+```
+Points above the reference line may be influential. Few high-charge observations stand out, but most points are below threshold, indicating minimal influence on the model coefficients.
+
+## Conclusion
+The simple linear regression model indicates a statistically significant positive relationship between age and insurance charges. Each additional year of age increases charges by approximately $258. However, the model explains only about 9% of the variability (R² ≈ 0.089), indicating other factors also contribute substantially. Diagnostic plots reveal slight deviations from linearity and normality, as well as mild heteroscedasticity, which is expected in real-world insurance data. Overall, the model provides a reasonable first approximation of the age-charge relationship and serves as a foundation for further multivariate modeling.
